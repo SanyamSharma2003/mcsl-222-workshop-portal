@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 /** Integration checks for authorization and the registration/payment boundary. */
 @SpringBootTest
@@ -226,6 +228,30 @@ class PortalIntegrationTest {
     @Test
     void unauthenticatedVisitorMustLogIn() throws Exception {
         mvc.perform(get("/registrations")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void logoutRequiresCsrfInvalidatesSessionAndReturnsAWorkingLoginPage() throws Exception {
+        var login = mvc.perform(post("/login").with(csrf())
+                .param("username", "participant1").param("password", "LabDemo!2026"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/registrations"))
+                .andReturn();
+        var session = (MockHttpSession) login.getRequest().getSession(false);
+        assertNotNull(session);
+        mvc.perform(get("/registrations").session(session)).andExpect(status().isOk());
+
+        mvc.perform(post("/logout").session(session)).andExpect(status().isForbidden());
+        assertFalse(session.isInvalid(), "A request without CSRF must not end the authenticated session");
+        mvc.perform(get("/registrations").session(session)).andExpect(status().isOk());
+
+        mvc.perform(post("/logout").session(session).with(csrf()))
+                .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/login"));
+        assertTrue(session.isInvalid(), "Successful logout must invalidate the old authenticated session");
+        mvc.perform(get("/login").with(anonymous())).andExpect(status().isOk())
+                .andExpect(content().string(containsString("name=\"username\"")))
+                .andExpect(content().string(containsString("name=\"_csrf\"")));
+        mvc.perform(get("/registrations").with(anonymous())).andExpect(status().is3xxRedirection());
     }
 
     @Test

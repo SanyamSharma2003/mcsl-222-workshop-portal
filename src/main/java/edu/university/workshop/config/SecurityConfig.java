@@ -29,7 +29,7 @@ public class SecurityConfig {
             .requestMatchers("/registrations","/registrations/**").hasAnyRole("PARTICIPANT","ADMIN","FINANCE")
             .anyRequest().denyAll())
             .formLogin(f->f.defaultSuccessUrl("/registrations",true))
-            .logout(l->l.logoutSuccessUrl("/login?logout").invalidateHttpSession(true).deleteCookies("JSESSIONID"))
+            .logout(l->l.logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID"))
             .csrf(c->c.ignoringRequestMatchers("/gateway/callback"))
             .sessionManagement(s->s.sessionFixation(f->f.migrateSession()))
             .headers(h->h.contentSecurityPolicy(c->c.policyDirectives("default-src 'self'; style-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"))

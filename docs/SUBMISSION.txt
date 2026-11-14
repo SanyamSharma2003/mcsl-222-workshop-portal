@@ -37,11 +37,13 @@ are locked even for administrators. Finance simulates settlement or failure.
 Workshop fee: INR 2,500.00, set by the server.
 
 VERIFICATION
-All 18 automated tests passed in GitHub Codespaces on 14 November 2026:
-17 integration tests and 1 simultaneous edit/payment test; no failures/errors.
-The packaged JAR started and served its login page. See checks/VERIFICATION.txt
-for the exact verification scope and JAR checksum. The repository's Actions
-workflow runs the same Maven verification command with Java 17.
+All 19 automated tests passed in GitHub Codespaces on 14 November 2026:
+18 integration tests and 1 simultaneous edit/payment test; no failures/errors.
+Automated logout checks cover CSRF enforcement, session invalidation and the
+login page response. The running application was exercised for registration
+CRUD and simulated fee settlement. See checks/VERIFICATION.txt for exact build
+details and the JAR checksum. The repository's Actions workflow runs the same
+Maven verification command with Java 17; view Actions for its current result.
 
 LAB SCOPE
 Payment outcomes are simulated; no real money is collected and no card or bank

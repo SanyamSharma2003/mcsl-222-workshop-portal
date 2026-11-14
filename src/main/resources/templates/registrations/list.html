@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Registrations')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="shell">
+    <div class="page-heading"><div><p class="eyebrow">Online registration &amp; fee payment</p><h1>Web Technologies Workshop</h1><p class="lede">Manage attendee details and track fee settlement securely.</p></div><a sec:authorize="hasAnyRole('PARTICIPANT', 'ADMIN')" class="button" th:href="@{/registrations/new}">New registration</a></div>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+    <div class="info-strip"><div><strong>Workshop fee</strong><span>INR 2,500.00 per registration</span></div><div><strong>Payment policy</strong><span>Only unpaid registrations can be changed or deleted.</span></div></div>
+    <section class="panel" aria-labelledby="registrations-heading">
+        <div class="panel-heading"><h2 id="registrations-heading" sec:authorize="hasRole('PARTICIPANT')">My registrations</h2><h2 sec:authorize="!hasRole('PARTICIPANT')">Registrations</h2><span class="muted" th:text="${#lists.size(registrations)} + ' record(s)'">0 records</span></div>
+        <div th:if="${#lists.isEmpty(registrations)}" class="empty-state"><h3>No registrations yet</h3><p>Create a registration to reserve a workshop place and begin the payment workflow.</p></div>
+        <div th:unless="${#lists.isEmpty(registrations)}" class="table-scroll"><table><thead><tr><th scope="col">Attendee</th><th scope="col">Contact</th><th scope="col">Fee</th><th scope="col">Payment</th><th scope="col">Details</th></tr></thead><tbody><tr th:each="registration : ${registrations}"><td><strong th:text="${registration.attendeeName}">Name</strong><small th:text="${registration.organisation}">Organisation</small></td><td><span th:text="${registration.email}">Email</span><small th:text="${registration.mobile}">Mobile</small></td><td class="nowrap" th:text="${registration.currency} + ' ' + ${#numbers.formatDecimal(registration.amountDue,1,2)}">INR 2500.00</td><td><span class="badge" th:classappend="${registration.paymentStatus.name().toLowerCase()}" th:text="${registration.paymentStatus}">UNPAID</span></td><td><a th:href="@{/registrations/{id}(id=${registration.id})}">View registration <span aria-hidden="true">→</span></a></td></tr></tbody></table></div>
+    </section>
+    <p class="fine-print" sec:authorize="hasRole('PARTICIPANT')">Your account can access only registrations that you own. Payment amounts and status are controlled by the server.</p>
+    <p class="fine-print" sec:authorize="hasRole('FINANCE')">Finance has read access to registrations. Use the payment desk to resolve demo payment attempts.</p>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

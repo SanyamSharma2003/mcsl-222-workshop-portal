@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | Web Technologies Workshop'">Web Technologies Workshop</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header th:fragment="header" class="site-header">
+    <div class="shell header-row">
+        <a class="brand" th:href="@{/registrations}"><span class="brand-mark">WT</span><span>Web Technologies<span class="brand-subtitle">Workshop registration portal</span></span></a>
+        <nav aria-label="Main navigation">
+            <a th:href="@{/registrations}">Registrations</a>
+            <a sec:authorize="hasAnyRole('FINANCE','ADMIN')" th:href="@{/finance/payments}">Payment desk</a>
+            <span class="account"><span sec:authentication="name">user</span><span class="role" sec:authorize="hasRole('PARTICIPANT')">Participant</span><span class="role" sec:authorize="hasRole('ADMIN')">Admin</span><span class="role" sec:authorize="hasRole('FINANCE')">Finance</span></span>
+            <form th:action="@{/logout}" method="post" class="inline-form"><button class="button-quiet" type="submit">Sign out</button></form>
+        </nav>
+    </div>
+</header>
+<div th:fragment="messages" class="messages"><p th:if="${success}" class="notice success" role="status" th:text="${success}"></p></div>
+<footer th:fragment="footer" class="shell site-footer">MCSL-222 · Spring Boot MVC · Spring Security · Hibernate/JPA <span>Academic demonstration · INR 2,500 workshop fee</span></footer>
+</body>
+</html>

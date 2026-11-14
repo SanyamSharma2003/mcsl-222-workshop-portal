@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Payment desk')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="shell">
+    <div class="page-heading"><div><p class="eyebrow">Finance role</p><h1>Payment desk</h1><p class="lede">Review payment orders and simulate provider settlement in the academic demo.</p></div></div>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+    <p th:if="${demoPayments}" class="notice warning">Demo mode only: these controls simulate a payment provider result. They do not move money. Production settlement must use a verified provider webhook.</p>
+    <section class="panel"><div class="panel-heading"><h2>Payment attempts</h2><span class="muted" th:text="${#lists.size(payments)} + ' attempt(s)'"></span></div>
+        <div th:if="${#lists.isEmpty(payments)}" class="empty-state"><h3>No payment attempts yet</h3><p>A participant must create a payment order from their registration.</p></div>
+        <div class="payment-list"><article class="payment-record" th:each="payment : ${payments}"><div class="payment-record-heading"><div><h3 th:text="${payment.registration.attendeeName}">Attendee</h3><p class="record-id" th:text="${payment.orderReference}"></p></div><span class="badge" th:classappend="${payment.status.name().toLowerCase()}" th:text="${payment.status}"></span></div><dl class="detail-grid"><div><dt>Amount</dt><dd th:text="${payment.currency} + ' ' + ${#numbers.formatDecimal(payment.amount,1,2)}"></dd></div><div><dt>Created at (UTC)</dt><dd th:text="${payment.createdAt}"></dd></div><div><dt>Registration</dt><dd><a th:href="@{/registrations/{id}(id=${payment.registration.id})}">View registration</a></dd></div><div th:if="${payment.receipt != null and !payment.receipt.isEmpty()}"><dt>Receipt</dt><dd th:text="${payment.receipt}"></dd></div></dl>
+            <form sec:authorize="hasRole('FINANCE')" th:if="${demoPayments and payment.status.name() == 'PENDING'}" th:action="@{/finance/payments/{id}/resolve(id=${payment.id})}" method="post" class="resolution-form"><div class="field"><label th:for="'receipt-' + ${payment.id}">Provider receipt / result reference</label><input th:id="'receipt-' + ${payment.id}" name="receipt" type="text" minlength="8" maxlength="100" required pattern="[A-Za-z0-9._:-]{8,100}" placeholder="e.g. DEMO-RECEIPT-001"><small>Use a unique receipt reference when recording a settled payment.</small></div><div class="form-actions"><button class="button" name="outcome" value="SETTLED" type="submit">Simulate settled</button><button class="button button-secondary" name="outcome" value="FAILED" type="submit">Simulate failed</button></div></form>
+        </article></div>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

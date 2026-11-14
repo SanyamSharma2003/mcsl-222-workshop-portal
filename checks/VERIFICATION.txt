@@ -1,0 +1,27 @@
+MCSL-222 Q1(ii) Web Technologies Workshop Portal
+Verified in GitHub Codespaces on 14 November 2026
+
+Command: mvn -B verify
+Runtime: OpenJDK 25.0.5.0.2, Maven, Java compiler release 17
+
+RESULT edu.university.workshop.PaymentRaceTest tests=1 failures=0 errors=0
+RESULT edu.university.workshop.PortalIntegrationTest tests=17 failures=0 errors=0
+BUILD SUCCESS
+
+Coverage: CRUD, ownership and role isolation, bean validation, CSRF, forbidden
+mass assignment, stale versions, pending/paid modification restrictions,
+failed retry, settlement idempotency, signed callback integrity/amount/time,
+malformed signed JSON, Thymeleaf rendering, and simultaneous edit/payment.
+
+No live PostgreSQL server or commercial payment provider was tested.
+
+Executable startup verified on HTTP 8081 in Codespaces:
+LIVE_HTTP_LOGIN 200 CSRF_FIELD True
+JAVA_CLASS_MAJOR 61 (Java 17 target)
+
+JAR SHA256:
+a73b8a61ba3d659cea6c22a02a2c1d81161133ab709136d51664c09c3987087f
+Main source and resources SHA256 (relative path + NUL + content, sorted):
+2db6f6fddedaed13ae2974ab080478422b6fe34f1db14a6c4d6f8655f50b549b
+The local deliverable and remote build source hashes match.
+Temporary run/download processes were stopped after verification.

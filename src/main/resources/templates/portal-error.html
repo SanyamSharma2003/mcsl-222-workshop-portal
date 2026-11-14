@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Request could not be completed')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="shell narrow"><section class="panel error-panel"><p class="eyebrow" th:text="'HTTP ' + ${status}">Request error</p><h1>Request could not be completed</h1><p class="lede" th:text="${message}">Please return to your registrations and try again.</p><p class="muted" th:if="${status == 409}">The record may have changed or its payment may be locked. Reload the latest registration before making another change.</p><a class="button" th:href="@{/registrations}">Return to registrations</a></section></main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

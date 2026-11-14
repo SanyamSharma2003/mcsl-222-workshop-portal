@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:workshoptests;DB_CLOSE_DELAY=-1
+    username: sa
+    password: test
+app:
+  demo-payments: true
+  gateway-secret: TestGatewaySigningSecretOnly2026ChangeMe

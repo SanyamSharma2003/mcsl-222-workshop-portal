@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${editing} ? 'Edit registration' : 'New registration')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="shell narrow">
+    <a class="back-link" th:href="@{/registrations}">← Registrations</a>
+    <div class="page-heading"><div><p class="eyebrow">Web Technologies Workshop</p><h1 th:text="${editing} ? 'Edit registration' : 'New registration'">New registration</h1><p class="lede">Enter the attendee's contact details. The fee is fixed at INR 2,500.00.</p></div></div>
+    <p th:if="${paymentLocked}" class="notice warning" role="alert">This registration has a pending or settled payment. Its details are locked and cannot be changed.</p>
+    <section class="panel form-panel">
+        <form th:action="${editing} ? @{/registrations/{id}/edit(id=${registrationId})} : @{/registrations}" th:object="${form}" method="post">
+            <input type="hidden" th:field="*{version}">
+            <div th:if="${#fields.hasAnyErrors()}" class="notice warning" role="alert"><strong>Please correct the highlighted fields.</strong><ul th:if="${#fields.hasGlobalErrors()}"><li th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li></ul></div>
+            <fieldset th:disabled="${paymentLocked}"><legend class="sr-only">Attendee details</legend>
+                <div class="field"><label for="attendeeName">Attendee name <span aria-hidden="true">*</span></label><input id="attendeeName" type="text" th:field="*{attendeeName}" required maxlength="100" autocomplete="name" th:attr="aria-invalid=${#fields.hasErrors('attendeeName')}"><p class="field-error" th:if="${#fields.hasErrors('attendeeName')}" th:errors="*{attendeeName}"></p></div>
+                <div class="field"><label for="email">Email address <span aria-hidden="true">*</span></label><input id="email" type="email" th:field="*{email}" required maxlength="254" autocomplete="email" th:attr="aria-invalid=${#fields.hasErrors('email')}"><p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p></div>
+                <div class="field"><label for="mobile">Mobile number <span aria-hidden="true">*</span></label><input id="mobile" type="tel" th:field="*{mobile}" required maxlength="13" pattern="\+91[6-9][0-9]{9}" placeholder="+919000000001" autocomplete="tel" th:attr="aria-invalid=${#fields.hasErrors('mobile')}" aria-describedby="mobile-hint"><small id="mobile-hint">Use +91 followed by a valid 10 digit Indian mobile number.</small><p class="field-error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></p></div>
+                <div class="field"><label for="organisation">Organisation / institution <span aria-hidden="true">*</span></label><input id="organisation" type="text" th:field="*{organisation}" required maxlength="150" autocomplete="organization" th:attr="aria-invalid=${#fields.hasErrors('organisation')}"><p class="field-error" th:if="${#fields.hasErrors('organisation')}" th:errors="*{organisation}"></p></div>
+                <div class="form-actions"><button class="button" type="submit" th:text="${editing} ? 'Save changes' : 'Create registration'">Create registration</button><a class="button button-secondary" th:href="${editing} ? @{/registrations/{id}(id=${registrationId})} : @{/registrations}">Cancel</a></div>
+            </fieldset>
+        </form>
+    </section>
+    <p class="fine-print">Required fields are marked *. Payment status, account ownership and workshop fee cannot be submitted through this form.</p>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

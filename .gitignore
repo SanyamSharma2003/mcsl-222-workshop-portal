@@ -1,0 +1,8 @@
+target/
+data/
+.env
+.env.*
+*.jar
+*.log
+*.pid
+.DS_Store

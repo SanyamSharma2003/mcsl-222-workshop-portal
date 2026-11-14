@@ -1,0 +1,50 @@
+MCSL-222 - Section 2 - Question 1(ii)
+Web Technologies Workshop Registration and Fee Payment Portal
+
+PUBLIC REPOSITORY / FULL WORKING CODE
+https://github.com/SanyamSharma2003/mcsl-222-workshop-portal
+
+VERSIONED SUBMISSION
+https://github.com/SanyamSharma2003/mcsl-222-workshop-portal/releases/tag/v1.0.0
+
+Refer to the public repository link for the full working code, database schema,
+configuration assumptions, security rules, tests and instructions. Repository
+viewing and source downloads do not require a running Codespace or a login.
+
+The v1.0.0 release contains workshop-registration-portal-1.0.0.jar, an executable
+Java 17 application. Run it with:
+java -jar workshop-registration-portal-1.0.0.jar
+Then open http://localhost:8080/registrations
+
+BROWSER-ONLY EXECUTION
+https://codespaces.new/SanyamSharma2003/mcsl-222-workshop-portal
+Use your own GitHub account and available Codespaces quota. Wait for the build,
+then open private forwarded HTTP port 8080. No local Docker Desktop is required.
+The Codespaces-only launcher trusts GitHub's private port proxy for HTTPS login
+redirects. Keep port visibility Private. Plain local JAR execution is separate.
+
+DEMO ACCOUNTS
+participant1, participant2, admin, finance
+Public lab password for all four: LabDemo!2026
+Accounts are pre-provisioned. There is no public sign-up workflow.
+
+IMPLEMENTATION
+Java 17; Spring Boot MVC; Spring Security; Thymeleaf; Hibernate/JPA; Flyway.
+Default persistent H2 demo storage and a PostgreSQL production template.
+CRUD operations validate ownership, role, version and settlement state.
+Only UNPAID rows can be updated or logically deleted. PENDING and PAID rows
+are locked even for administrators. Finance simulates settlement or failure.
+Workshop fee: INR 2,500.00, set by the server.
+
+VERIFICATION
+All 18 automated tests passed in GitHub Codespaces on 14 November 2026:
+17 integration tests and 1 simultaneous edit/payment test; no failures/errors.
+The packaged JAR started and served its login page. See checks/VERIFICATION.txt
+for the exact verification scope and JAR checksum. The repository's Actions
+workflow runs the same Maven verification command with Java 17.
+
+LAB SCOPE
+Payment outcomes are simulated; no real money is collected and no card or bank
+details are requested. The sample credentials are intentionally public demo
+values. Real provider integration and live PostgreSQL verification are outside
+this tested lab submission. Do not enter real personal or payment information.

@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  flyway:
+    user: ${MIGRATION_USERNAME}
+    password: ${MIGRATION_PASSWORD}
+server:
+  address: ${BIND_ADDRESS:127.0.0.1}
+  forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        secure: true
+app:
+  demo-payments: false
+  require-https: true
+  gateway-secret: ${GATEWAY_SIGNING_SECRET}

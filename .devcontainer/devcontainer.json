@@ -1,0 +1,9 @@
+{
+  "name": "MCSL 222 Spring Workshop Portal",
+  "image": "mcr.microsoft.com/devcontainers/java:1-17-bookworm",
+  "features": {"ghcr.io/devcontainers/features/java:1": {"version":"17", "installMaven":true}},
+  "forwardPorts": [8080],
+  "portsAttributes": {"8080":{"label":"Workshop portal","protocol":"http","onAutoForward":"notify"}},
+  "postCreateCommand": "mvn -B verify",
+  "postStartCommand": "bash codespaces/start.sh"
+}

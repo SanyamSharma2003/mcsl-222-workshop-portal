@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Registration details')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="shell narrow">
+    <a class="back-link" th:href="@{/registrations}">← Registrations</a>
+    <div class="page-heading"><div><p class="eyebrow">Web Technologies Workshop</p><h1>Registration details</h1><p class="record-id" th:text="'Reference: ' + ${registration.id}"></p></div><span class="badge" th:classappend="${registration.paymentStatus.name().toLowerCase()}" th:text="${registration.paymentStatus}">UNPAID</span></div>
+    <div th:replace="~{fragments/layout :: messages}"></div>
+    <section class="panel detail-panel"><h2>Attendee information</h2><dl class="detail-grid"><div><dt>Name</dt><dd th:text="${registration.attendeeName}"></dd></div><div><dt>Email address</dt><dd th:text="${registration.email}"></dd></div><div><dt>Mobile number</dt><dd th:text="${registration.mobile}"></dd></div><div><dt>Organisation</dt><dd th:text="${registration.organisation}"></dd></div><div><dt>Fee due</dt><dd th:text="${registration.currency} + ' ' + ${#numbers.formatDecimal(registration.amountDue,1,2)}"></dd></div><div sec:authorize="hasAnyRole('ADMIN', 'FINANCE')"><dt>Account owner</dt><dd th:text="${registration.owner.username}"></dd></div><div><dt>Record version</dt><dd th:text="${registration.version}"></dd></div></dl></section>
+    <section class="panel detail-panel" aria-labelledby="actions-heading"><h2 id="actions-heading">Registration actions</h2>
+        <div th:if="${registration.paymentStatus.name() == 'UNPAID'}">
+            <p class="muted">This unpaid registration can be edited or deleted by its owner or an administrator.</p>
+            <div class="form-actions" sec:authorize="hasAnyRole('PARTICIPANT', 'ADMIN')"><a class="button button-secondary" th:href="@{/registrations/{id}/edit(id=${registration.id})}">Edit details</a><form th:action="@{/registrations/{id}/delete(id=${registration.id})}" method="post" class="inline-form"><input type="hidden" name="version" th:value="${registration.version}"><button class="button button-danger" type="submit">Delete unpaid registration</button></form></div>
+            <div sec:authorize="hasRole('PARTICIPANT')" class="payment-box"><h3>Pay the workshop fee</h3><p>Create a server-priced payment order for INR 2,500.00. This academic demo does not collect card or banking details. A finance user simulates the provider result.</p><form th:action="@{/registrations/{id}/pay(id=${registration.id})}" method="post"><input type="hidden" name="version" th:value="${registration.version}"><button class="button" type="submit">Create payment order</button></form></div>
+        </div>
+        <p th:if="${registration.paymentStatus.name() == 'PENDING'}" class="notice warning">Payment is pending. Editing and deletion are locked until the payment result is resolved. A failed payment unlocks the registration for correction or retry.</p>
+        <p th:if="${registration.paymentStatus.name() == 'PAID'}" class="notice success">Payment is settled. Your registration is confirmed. Editing and deletion are blocked to preserve the settled transaction.</p>
+        <p sec:authorize="hasRole('FINANCE')" class="muted">Finance cannot edit or delete attendee records. <a th:href="@{/finance/payments}">Open payment desk</a>.</p>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
